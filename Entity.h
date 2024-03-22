@@ -30,7 +30,7 @@ public:
     int getAttack() { return m_attack; }
 
     int getGold() { return m_gold; }
-
+    
     int getMaxHp() { return m_maxHp; }
 
     int getXP() { return m_xp; }

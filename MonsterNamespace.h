@@ -26,7 +26,7 @@ namespace MonsterInfo
     // Generate monster function here, returns int from 0 to Type::max_monsters
     int generateMonster()
     {
-        return Random::generate(0, max_monsters);
+        return Random::generate(0, (max_monsters - 1));
     }
 
 }

@@ -5,6 +5,7 @@
 #include "Entity.h"
 #include "Monster.h"
 #include "Player.h"
+#include "Random.h"
 
 std::string getName();
 void greeting(std::string_view name);
@@ -48,7 +49,7 @@ std::string getName() {
 
 void greeting(std::string_view name) {
     std::cout << "Welcome to the labyrinth of C++ RPG, " << name << '\n';
-    std::cout << "You will encounter a variety of monsters. If you reach lvl. 20, you win!\n\n";
+    std::cout << "You will encounter a variety of monsters. If you reach lvl. 20, you win!\n";
 }
 
 char makeChoice() {
@@ -68,12 +69,18 @@ bool attack(Entity* attacker, Entity* defender) {
 
 bool flee() {
     // Evaluate if successful or not
-    return true;
+    int success{ Random::generate(0, 1) };
+    return success == 1;
 }
 
 void turn(Player& p, int stage) {
     Monster m{ MonsterInfo::generateMonster() };
-    std::cout << "Stage " << stage;
+
+    std::cout << "Enter any key to continue... ";
+    char cont{};
+    std::cin >> cont;
+
+    std::cout << "\nStage " << stage;
     std::cout << "\nYou have encountered a " << m.getName() << "!\n";
     while (true) {
         std::cout << m.getName() << ": " << m.getCurrentHp() << '/' << m.getMaxHp() << " hp\n";
@@ -102,20 +109,25 @@ void turn(Player& p, int stage) {
             
         }
 
+        std::cout << "******\n";
+
         // Monster's attack
         if (m.checkAlive()) {
             if (attack(&m, &p)) {
-                std::cout << "The dragon hit you for " << m.getAttack() << " damage!\n";
+                std::cout << "The " << m.getName() << " hit you for " << m.getAttack() << " damage!\n";
             }
             else {
                 std::cout << "The " << m.getName() << " attacked and missed!\n";
             }
         }
         else {
-            std::cout << "The " << m.getName() << " lies dead. You venture onwards\n";
+            std::cout << "The " << m.getName() << " lies dead.\n";
             // Get gold / xp function here
             p.addGold(m.getGold());
+            std::cout << "You found " << m.getGold() << " gold.\n";
             p.addXP(m.getXP());
+            std::cout << "You now have " << p.getXP() << " XP.\n";
+
             break;
         }
 
