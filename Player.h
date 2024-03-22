@@ -9,6 +9,8 @@ class Player : public Entity
 {
 protected:
 	int m_level{0};
+	
+
 public:
 	Player(std::string name) : Entity{name, 20, 0, 0, 5} {};
 

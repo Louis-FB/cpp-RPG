@@ -1,7 +1,9 @@
 #include <iostream>
 #include <string>
 #include <string_view>
+#include <vector>
 #include "MonsterNamespace.h"
+#include "PotionNamespace.h"
 #include "Entity.h"
 #include "Monster.h"
 #include "Player.h"
@@ -10,6 +12,7 @@
 std::string getName();
 void greeting(std::string_view name);
 void turn(Player& player, int stage);
+
 
 int main()
 {
@@ -22,6 +25,12 @@ int main()
         {
             ++stage;
             turn(player, stage); // Each battle
+            if (stage == 20) {
+                std::cout << "*********************\n";
+                std::cout << "Congratulations! you won!\n";
+                std::cout << "*********************\n";
+                break;
+            }
         }
         else {
             std::cout << "You have died!\n";
@@ -49,7 +58,7 @@ std::string getName() {
 
 void greeting(std::string_view name) {
     std::cout << "Welcome to the labyrinth of C++ RPG, " << name << '\n';
-    std::cout << "You will encounter a variety of monsters. If you reach lvl. 20, you win!\n";
+    std::cout << "You will encounter a variety of monsters.\nIf you reach stage 20, you win!\n";
 }
 
 char makeChoice() {
@@ -61,8 +70,8 @@ char makeChoice() {
     } while (choice != 'a' && choice != 'f');
 }
 
-bool attack(Entity* attacker, Entity* defender) {
-    defender->setCurrentHp(attacker->getAttack());
+bool attack(Entity& attacker, Entity& defender) {
+    defender.setCurrentHp(attacker.getAttack());
     // check if successful attack or not
     return true;
 }
@@ -71,6 +80,10 @@ bool flee() {
     // Evaluate if successful or not
     int success{ Random::generate(0, 1) };
     return success == 1;
+}
+
+void loot(Player& p) {
+
 }
 
 void turn(Player& p, int stage) {
@@ -85,13 +98,14 @@ void turn(Player& p, int stage) {
     while (true) {
         std::cout << m.getName() << ": " << m.getCurrentHp() << '/' << m.getMaxHp() << " hp\n";
         std::cout << p.getName() << ": " << p.getCurrentHp() << '/' << p.getMaxHp() << " hp\n";
-        std::cout << "\nAttack (a) or flee (f)\n";
+        std::cout << "-Options- \n";
+        std::cout << "(a) Attack (f) Flee (i) Inventory\n";
         char choice{ makeChoice() };
         
 
         // Player attack monster (if successful)
         if (choice == 'a') {
-            if (attack(&p, &m)) {
+            if (attack(p, m)) {
                 std::cout << "You hit the " << m.getName() << " for " << p.getAttack() << " damage!\n";
             }
             else {
@@ -113,7 +127,7 @@ void turn(Player& p, int stage) {
 
         // Monster's attack
         if (m.checkAlive()) {
-            if (attack(&m, &p)) {
+            if (attack(m, p)) {
                 std::cout << "The " << m.getName() << " hit you for " << m.getAttack() << " damage!\n";
             }
             else {
@@ -122,12 +136,12 @@ void turn(Player& p, int stage) {
         }
         else {
             std::cout << "The " << m.getName() << " lies dead.\n";
-            // Get gold / xp function here
+            loot(p); // randomly acquire items
             p.addGold(m.getGold());
             std::cout << "You found " << m.getGold() << " gold.\n";
             p.addXP(m.getXP());
             std::cout << "You now have " << p.getXP() << " XP.\n";
-
+            std::cout << "******\n";
             break;
         }
 

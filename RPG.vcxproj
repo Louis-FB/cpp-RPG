@@ -136,6 +136,7 @@
     <ClInclude Include="Monster.h" />
     <ClInclude Include="MonsterNamespace.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PotionNamespace.h" />
     <ClInclude Include="Random.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
