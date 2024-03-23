@@ -18,7 +18,7 @@ public:
     Type getType() { return m_type; }
 
     /*
-    void attack(Player& p) {
+    void attack(Entity& player) {
         p.setCurrentHp(this->getAttack());
     }
     */

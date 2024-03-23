@@ -82,8 +82,24 @@ bool flee() {
     return success == 1;
 }
 
-void loot(Player& p) {
+void loot(Player& p, Monster& m) {
+    p.addGold(m.getGold());
+    p.addXP(m.getXP());
+    std::cout << "You got " << m.getGold() << " gold, and you now have " << p.getXP() << " XP\n";
+    // Find potion
 
+    PotionNamespace::Type potion{ static_cast<PotionNamespace::Type>(PotionNamespace::generatePotion()) };
+    std::cout << "[You have found a " << PotionNamespace::potionName[potion] << "]\n";
+    std::cout << "--Options-----------------\n";
+    std::cout << "| (p) Pick up (n) Ignore |\n";
+    std::cout << "--------------------------\n";
+    char choice{};
+    std::cin >> choice;
+    if (choice == 'p')
+        p.addPotion(potion);
+    
+    //
+    std::cout << "******\n";
 }
 
 void turn(Player& p, int stage) {
@@ -93,13 +109,15 @@ void turn(Player& p, int stage) {
     char cont{};
     std::cin >> cont;
 
-    std::cout << "\nStage " << stage;
-    std::cout << "\nYou have encountered a " << m.getName() << "!\n";
+    //::cout << "-----------------\n";
+    std::cout << "\n[Stage " << stage << "]\n";
+    std::cout << "You have encountered a " << m.getName() << "!\n";
     while (true) {
         std::cout << m.getName() << ": " << m.getCurrentHp() << '/' << m.getMaxHp() << " hp\n";
         std::cout << p.getName() << ": " << p.getCurrentHp() << '/' << p.getMaxHp() << " hp\n";
-        std::cout << "-Options- \n";
-        std::cout << "(a) Attack (f) Flee (i) Inventory\n";
+        std::cout << "--Options---------------------------- \n";
+        std::cout << "| (a) Attack (f) Flee (i) Inventory |\n";
+        std::cout << "------------------------------------- \n";
         char choice{ makeChoice() };
         
 
@@ -112,7 +130,7 @@ void turn(Player& p, int stage) {
                 std::cout << "You missed the " << m.getName() << '\n';
             }
         }
-        else {
+        else if(choice == 'f') {
             if (flee()) {
                 std::cout << "You successfully evaded the " << m.getName() << "!\n";
                 break;
@@ -121,6 +139,10 @@ void turn(Player& p, int stage) {
                 std::cout << "You failed to escape!\n";
             }
             
+        }
+        else if (choice == 'i') {
+            // checkInventory()
+            std::cout << "Opening inventory...\n";
         }
 
         std::cout << "******\n";
@@ -136,12 +158,7 @@ void turn(Player& p, int stage) {
         }
         else {
             std::cout << "The " << m.getName() << " lies dead.\n";
-            loot(p); // randomly acquire items
-            p.addGold(m.getGold());
-            std::cout << "You found " << m.getGold() << " gold.\n";
-            p.addXP(m.getXP());
-            std::cout << "You now have " << p.getXP() << " XP.\n";
-            std::cout << "******\n";
+            loot(p, m); // randomly acquire items
             break;
         }
 

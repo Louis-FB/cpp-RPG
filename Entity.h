@@ -42,4 +42,7 @@ public:
     //virtual void attack() = 0;
      // Parameter is the attacker (or is target), is pure virtual and assigned by derived?
     
+    // void attack(Entity& enemy) { enemy.setCurrentHp(this->getAttack()); }
+    
+    
 };
