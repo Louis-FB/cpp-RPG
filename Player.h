@@ -34,6 +34,8 @@ public:
 		m_potionEffect = static_cast<int>(potion); // Pass as enum, assign single potion as int
 	}
 
+	int getPotionEffect() { return m_potionEffect; }
+
 	void removePotion() {
 		m_potionEffect = -1; // Remove potion effect
 	}
@@ -43,4 +45,9 @@ public:
 		m.setCurrentHp(this->getAttack());
 	}
 	*/
+
+	void attack(Entity& monster) override { 
+		monster.setCurrentHp(this->getAttack());
+	}
+
 };

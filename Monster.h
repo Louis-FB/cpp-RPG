@@ -22,4 +22,7 @@ public:
         p.setCurrentHp(this->getAttack());
     }
     */
+    void attack(Entity& player) override {
+        player.setCurrentHp(this->getAttack());
+    }
 };

@@ -70,11 +70,18 @@ char makeChoice() {
     } while (choice != 'a' && choice != 'f');
 }
 
-bool attack(Entity& attacker, Entity& defender) {
-    defender.setCurrentHp(attacker.getAttack());
+
+bool fight(Entity& attacker, Entity& defender) {
+    int attackDmg{ attacker.getAttack() };
+
+    //defender.setCurrentHp(attackDmg);
     // check if successful attack or not
+
+    attacker.attack(defender);
+
     return true;
 }
+
 
 bool flee() {
     // Evaluate if successful or not
@@ -123,7 +130,7 @@ void turn(Player& p, int stage) {
 
         // Player attack monster (if successful)
         if (choice == 'a') {
-            if (attack(p, m)) {
+            if (fight(p, m)) {
                 std::cout << "You hit the " << m.getName() << " for " << p.getAttack() << " damage!\n";
             }
             else {
@@ -149,7 +156,7 @@ void turn(Player& p, int stage) {
 
         // Monster's attack
         if (m.checkAlive()) {
-            if (attack(m, p)) {
+            if (fight(m, p)) {
                 std::cout << "The " << m.getName() << " hit you for " << m.getAttack() << " damage!\n";
             }
             else {
