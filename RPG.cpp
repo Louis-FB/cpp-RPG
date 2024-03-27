@@ -109,7 +109,36 @@ void loot(Player& p, Monster& m) {
     std::cout << "******\n";
 }
 
+void showInventory(Player& p) {
+    const std::vector<PotionNamespace::Type> inventory{ p.getInventory() };
+    if (inventory.size() > 0) {
+        std::cout << "Choose a potion: \n";
+        for (int index{ 0 }; index < inventory.size(); ++index) {
+            std::cout << '(' << index + 1 << ") " << PotionNamespace::potionName[inventory[index]] << '\n';
+        }
+        while (true) {
+            int choice{};
+            std::cin >> choice;
+            if (choice >= inventory.size()) {
+                std::cin.clear();
+                continue;
+            }
+            else {
+                PotionNamespace::Type potion{ inventory[choice] };
+            }
+        }
+    }
+}
+
 void turn(Player& p, int stage) {
+    // Variable to assign potion effect
+    // Clear member potion function
+    PotionNamespace::Type potionEffect{};
+    if (p.getPotionEffect()) {
+        potionEffect = static_cast<PotionNamespace::Type>(p.getPotionEffect());
+        p.removePotion();
+    }
+
     Monster m{ MonsterInfo::generateMonster() };
 
     std::cout << "Enter any key to continue... ";
@@ -149,7 +178,8 @@ void turn(Player& p, int stage) {
         }
         else if (choice == 'i') {
             // checkInventory()
-            std::cout << "Opening inventory...\n";
+            //std::cout << "Opening inventory...\n";
+            showInventory(p);
         }
 
         std::cout << "******\n";

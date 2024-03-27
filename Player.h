@@ -34,6 +34,10 @@ public:
 		m_potionEffect = static_cast<int>(potion); // Pass as enum, assign single potion as int
 	}
 
+	std::vector<PotionNamespace::Type>& getInventory() {
+		return m_inventory;
+	}
+
 	int getPotionEffect() { return m_potionEffect; }
 
 	void removePotion() {
