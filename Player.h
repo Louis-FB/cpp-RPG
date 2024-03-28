@@ -38,6 +38,22 @@ public:
 		return m_inventory;
 	}
 
+	void addPotionEffect(PotionNamespace::Type potion, int index) { // implicit conversion?
+		
+		m_potionEffect = static_cast<int>(potion);
+		std::cout << "Test: potion effect: " << m_potionEffect << '\n';
+		// if health restore hp
+		if (m_potionEffect == PotionNamespace::health) {
+			m_currentHp = m_maxHp;
+			std::cout << "**Health restored!**\n";
+		}
+		else {
+			std::cout << "Test: potion not matched with health enum\n";
+		}
+			
+		m_inventory.erase(m_inventory.begin() + index);
+	}
+
 	int getPotionEffect() { return m_potionEffect; }
 
 	void removePotion() {
@@ -49,8 +65,21 @@ public:
 		m.setCurrentHp(this->getAttack());
 	}
 	*/
+	int getAttack() override { 
+		PotionNamespace::Type attack{};
+		if (m_potionEffect == PotionNamespace::Type::strength) {
+			
+			removePotion();
+			return m_attack + 10;
+		}
+		else {
+			return m_attack; 
+		}
+	}
 
-	void attack(Entity& monster) override { 
+	void attack(Entity& monster) { // override keyword?
+		//using namespace PotionNamespace;
+		
 		monster.setCurrentHp(this->getAttack());
 	}
 

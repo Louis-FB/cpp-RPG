@@ -72,7 +72,7 @@ char makeChoice() {
 
 
 bool fight(Entity& attacker, Entity& defender) {
-    int attackDmg{ attacker.getAttack() };
+    //int attackDmg{ attacker.getAttack() };
 
     //defender.setCurrentHp(attackDmg);
     // check if successful attack or not
@@ -112,19 +112,29 @@ void loot(Player& p, Monster& m) {
 void showInventory(Player& p) {
     const std::vector<PotionNamespace::Type> inventory{ p.getInventory() };
     if (inventory.size() > 0) {
-        std::cout << "Choose a potion: \n";
+        std::cout << "Choose a potion or 0 to exit: \n";
         for (int index{ 0 }; index < inventory.size(); ++index) {
             std::cout << '(' << index + 1 << ") " << PotionNamespace::potionName[inventory[index]] << '\n';
         }
         while (true) {
+            std::cout << "Test: selecting from inventory\n";
+            std::cout << "Test inventoy size: " << inventory.size() << '\n';
             int choice{};
             std::cin >> choice;
-            if (choice >= inventory.size()) {
+            if (choice == 0) {
+                break;
+            }
+            if (choice >= inventory.size() + 1) { // else-if error here
                 std::cin.clear();
                 continue;
             }
             else {
-                PotionNamespace::Type potion{ inventory[choice] };
+                //std::cout << "Test: made choice\n";
+                //std::cout << Test: << inventory[choice - 1];
+                PotionNamespace::Type potion{ inventory[choice - 1] };
+               p.addPotionEffect(potion, (choice - 1));
+               std::cout << "You drank a " << PotionNamespace::potionName[inventory[choice - 1]] << '\n';
+                break;
             }
         }
     }
@@ -133,11 +143,13 @@ void showInventory(Player& p) {
 void turn(Player& p, int stage) {
     // Variable to assign potion effect
     // Clear member potion function
+    /*
     PotionNamespace::Type potionEffect{};
     if (p.getPotionEffect()) {
         potionEffect = static_cast<PotionNamespace::Type>(p.getPotionEffect());
         p.removePotion();
     }
+    */
 
     Monster m{ MonsterInfo::generateMonster() };
 
@@ -160,7 +172,8 @@ void turn(Player& p, int stage) {
         // Player attack monster (if successful)
         if (choice == 'a') {
             if (fight(p, m)) {
-                std::cout << "You hit the " << m.getName() << " for " << p.getAttack() << " damage!\n";
+                //std::cout << "You hit the " << m.getName() << " for " << p.getAttack() << " damage!\n";
+                std::cout << "You hit the " << m.getName() << "!\n";
             }
             else {
                 std::cout << "You missed the " << m.getName() << '\n';
@@ -186,6 +199,12 @@ void turn(Player& p, int stage) {
 
         // Monster's attack
         if (m.checkAlive()) {
+            if (p.getPotionEffect() == PotionNamespace::Type::invisibility) {
+                std::cout << "Test: matched invisibility\n";
+                p.removePotion();
+                std::cout << "Thanks to the potion of invisibiity you slipped way unnoticed\n";
+                break;
+            }
             if (fight(m, p)) {
                 std::cout << "The " << m.getName() << " hit you for " << m.getAttack() << " damage!\n";
             }

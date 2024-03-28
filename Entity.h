@@ -27,7 +27,7 @@ public:
 
     bool checkAlive() { return m_currentHp > 0; } // Return true if current HP > 0
 
-    int getAttack() { return m_attack; }
+    virtual int getAttack() { return m_attack; }
 
     int getGold() { return m_gold; }
     
