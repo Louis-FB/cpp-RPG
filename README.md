@@ -1,4 +1,4 @@
-### C++ RPG
+### C++ RPG (WIP)
 An RPG made in C++
 Compile and run
 Fight monsters and drink potions.
