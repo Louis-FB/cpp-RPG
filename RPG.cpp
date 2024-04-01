@@ -117,8 +117,6 @@ void showInventory(Player& p) {
             std::cout << '(' << index + 1 << ") " << PotionNamespace::potionName[inventory[index]] << '\n';
         }
         while (true) {
-            std::cout << "Test: selecting from inventory\n";
-            std::cout << "Test inventoy size: " << inventory.size() << '\n';
             int choice{};
             std::cin >> choice;
             if (choice == 0) {
@@ -129,36 +127,24 @@ void showInventory(Player& p) {
                 continue;
             }
             else {
-                //std::cout << "Test: made choice\n";
-                //std::cout << Test: << inventory[choice - 1];
-                PotionNamespace::Type potion{ inventory[choice - 1] };
-               p.addPotionEffect(potion, (choice - 1));
-               std::cout << "You drank a " << PotionNamespace::potionName[inventory[choice - 1]] << '\n';
-                break;
+
+                --choice;
+               std::cout << "Choice: " << choice << '\n';
+               PotionNamespace::Type potion{ inventory[choice] };
+               p.addPotionEffect(potion, (choice));
+               std::cout << "You drank a " << PotionNamespace::potionName[inventory[choice]] << '\n';
+               break;
             }
         }
     }
 }
 
-void turn(Player& p, int stage) {
-    // Variable to assign potion effect
-    // Clear member potion function
-    /*
-    PotionNamespace::Type potionEffect{};
-    if (p.getPotionEffect()) {
-        potionEffect = static_cast<PotionNamespace::Type>(p.getPotionEffect());
-        p.removePotion();
-    }
-    */
-
+void monsterBattle(Player& p) {
+    std::cout << "Monster battle\n";
     Monster m{ MonsterInfo::generateMonster() };
 
-    std::cout << "Enter any key to continue... ";
-    char cont{};
-    std::cin >> cont;
 
-    //::cout << "-----------------\n";
-    std::cout << "\n[Stage " << stage << "]\n";
+    
     std::cout << "You have encountered a " << m.getName() << "!\n";
     while (true) {
         std::cout << m.getName() << ": " << m.getCurrentHp() << '/' << m.getMaxHp() << " hp\n";
@@ -167,7 +153,7 @@ void turn(Player& p, int stage) {
         std::cout << "| (a) Attack (f) Flee (i) Inventory |\n";
         std::cout << "------------------------------------- \n";
         char choice{ makeChoice() };
-        
+
 
         // Player attack monster (if successful)
         if (choice == 'a') {
@@ -179,7 +165,7 @@ void turn(Player& p, int stage) {
                 std::cout << "You missed the " << m.getName() << '\n';
             }
         }
-        else if(choice == 'f') {
+        else if (choice == 'f') {
             if (flee()) {
                 std::cout << "You successfully evaded the " << m.getName() << "!\n";
                 break;
@@ -187,11 +173,10 @@ void turn(Player& p, int stage) {
             else {
                 std::cout << "You failed to escape!\n";
             }
-            
+
         }
         else if (choice == 'i') {
-            // checkInventory()
-            //std::cout << "Opening inventory...\n";
+      
             showInventory(p);
         }
 
@@ -221,5 +206,37 @@ void turn(Player& p, int stage) {
         if (!p.checkAlive()) {
             break;
         }
+    }
+}
+
+void bossBattle(Player& p) {
+    std::cout << "Boss battle\n";
+}
+
+void specialEvent(Player& p) {
+    std::cout << "Special event\n";
+}
+
+void merchantStage(Player& p) {
+    std::cout << "Special event\n";
+}
+
+void turn(Player& p, int stage) {
+
+    std::cout << "Enter any key to continue... ";
+    char cont{};
+    std::cin >> cont;
+
+    if (stage % 10 == 0) {
+        std::cout << "\n[Stage " << stage << " - Boss]\n";
+        bossBattle(p);
+    }
+    else if (stage % 5 == 0) {
+        std::cout << "\n[Stage " << stage << " - Merchant]\n";
+        merchantStage(p);
+    }
+    else {
+        std::cout << "\n[Stage " << stage << "]\n";
+        monsterBattle(p);
     }
 }
