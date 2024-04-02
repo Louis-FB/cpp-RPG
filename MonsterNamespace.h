@@ -16,7 +16,7 @@ namespace MonsterInfo
         max_monsters
     };
 
-    std::array<int, max_monsters> monsterAttack{ 6, 7, 2, 1 };                                   
+    std::array<int, max_monsters> monsterAttack{ 6, 7, 3, 2 };                                   
     std::array<int, max_monsters> monsterHealth{ 12, 14, 4, 2 };                                 
     std::array<int, max_monsters> monsterGold{ 20, 30, 20, 30 }; 
     std::array<int, max_monsters> monsterXP{ 20, 30, 20, 30 }; 

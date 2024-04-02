@@ -2,6 +2,7 @@
 #include <vector>
 #include "Entity.h"
 #include "PotionNamespace.h"
+#include "LevelNamespace.h"
 // #include "Monster.h"
 // #include "MonsterNamespace.h"
 
@@ -16,15 +17,13 @@ protected:
 	
 
 public:
-	Player(std::string name) : Entity{name, 20, 0, 0, 5} {};
+	Player(std::string name) : Entity{name, Level::lvlHp[0], 0, 0, Level::lvlAttack[0] } {};
 
 	void addGold(int gold) {
 		m_gold += gold;
 	}
 
-	void addXP(int xp) {
-		m_xp += xp;
-	}
+	
 
 	void addPotion(PotionNamespace::Type potion) {
 		m_inventory.emplace_back(potion);
@@ -41,8 +40,7 @@ public:
 	void addPotionEffect(PotionNamespace::Type potion, int index) { // implicit conversion?
 		
 		m_potionEffect = static_cast<int>(potion);
-		std::cout << "Test: potion effect: " << m_potionEffect << '\n';
-		// if health restore hp
+		
 		if (m_potionEffect == PotionNamespace::health) {
 			m_currentHp = m_maxHp;
 			std::cout << "**Health restored!**\n";
@@ -77,10 +75,42 @@ public:
 		}
 	}
 
+	void levelUp(int level) {
+		
+		m_level = level;
+		std::cout << "**You are now level " << level << "**\n";
+			m_attack = Level::lvlAttack[level];
+			m_maxHp = Level::lvlHp[level];
+		
+	}
+
+	void addXP(int xp) {
+		m_xp += xp;
+		
+		if (m_level < Level::maxLevel) {
+			// check if need to level up
+			for (int index{ 0 }; index < Level::maxLevel; ++index) {
+				if (Level::xpRequirements[index] < m_xp && Level::xpRequirements[index + 1] > m_xp) {
+					if (index == m_level) {
+						std::cout << "Same level\n";
+						break;
+					}
+					else {
+						this->levelUp(index);
+						break;
+					}
+					
+				}
+			}
+			
+		}
+	}
+
 	void attack(Entity& monster) { // override keyword?
 		//using namespace PotionNamespace;
 		
 		monster.setCurrentHp(this->getAttack());
 	}
 
+	
 };

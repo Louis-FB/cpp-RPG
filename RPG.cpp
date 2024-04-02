@@ -57,8 +57,10 @@ std::string getName() {
 }
 
 void greeting(std::string_view name) {
+    std::cout << "\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
     std::cout << "Welcome to the labyrinth of C++ RPG, " << name << '\n';
-    std::cout << "You will encounter a variety of monsters.\nIf you reach stage 20, you win!\n";
+    std::cout << "You will encounter a variety of monsters.\nIf you reach level 20, you win!\n";
+    std::cout << "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
 }
 
 char makeChoice() {
@@ -95,17 +97,19 @@ void loot(Player& p, Monster& m) {
     std::cout << "You got " << m.getGold() << " gold, and you now have " << p.getXP() << " XP\n";
     // Find potion
 
-    PotionNamespace::Type potion{ static_cast<PotionNamespace::Type>(PotionNamespace::generatePotion()) };
-    std::cout << "[You have found a " << PotionNamespace::potionName[potion] << "]\n";
-    std::cout << "--Options-----------------\n";
-    std::cout << "| (p) Pick up (n) Ignore |\n";
-    std::cout << "--------------------------\n";
-    char choice{};
-    std::cin >> choice;
-    if (choice == 'p')
-        p.addPotion(potion);
-    
-    //
+    int lootSuccess = Random::generate(0, 4);
+    if (lootSuccess == 4) {
+        PotionNamespace::Type potion{ static_cast<PotionNamespace::Type>(PotionNamespace::generatePotion()) };
+        std::cout << "[You have found a " << PotionNamespace::potionName[potion] << "]\n";
+        std::cout << "--Options-----------------\n";
+        std::cout << "| (p) Pick up (n) Ignore |\n";
+        std::cout << "--------------------------\n";
+        char choice{};
+        std::cin >> choice;
+        if (choice == 'p')
+            p.addPotion(potion);
+    }
+
     std::cout << "******\n";
 }
 
@@ -140,11 +144,9 @@ void showInventory(Player& p) {
 }
 
 void monsterBattle(Player& p) {
-    std::cout << "Monster battle\n";
     Monster m{ MonsterInfo::generateMonster() };
 
 
-    
     std::cout << "You have encountered a " << m.getName() << "!\n";
     while (true) {
         std::cout << m.getName() << ": " << m.getCurrentHp() << '/' << m.getMaxHp() << " hp\n";
@@ -185,7 +187,7 @@ void monsterBattle(Player& p) {
         // Monster's attack
         if (m.checkAlive()) {
             if (p.getPotionEffect() == PotionNamespace::Type::invisibility) {
-                std::cout << "Test: matched invisibility\n";
+                
                 p.removePotion();
                 std::cout << "Thanks to the potion of invisibiity you slipped way unnoticed\n";
                 break;
@@ -210,7 +212,63 @@ void monsterBattle(Player& p) {
 }
 
 void bossBattle(Player& p) {
-    std::cout << "Boss battle\n";
+    Monster m{ MonsterInfo::generateMonster() }; // use boss class
+
+    std::cout << "You have encountered a " << m.getName() << "!\n";
+
+    while (true) {
+        std::cout << m.getName() << ": " << m.getCurrentHp() << '/' << m.getMaxHp() << " hp\n";
+        std::cout << p.getName() << ": " << p.getCurrentHp() << '/' << p.getMaxHp() << " hp\n";
+        std::cout << "--Options-------------------\n";
+        std::cout << "| (a) Attack (i) Inventory |\n";
+        std::cout << "----------------------------\n";
+        char choice{ makeChoice() };
+
+
+        // Player attack monster (if successful)
+        if (choice == 'a') {
+            if (fight(p, m)) {
+                //std::cout << "You hit the " << m.getName() << " for " << p.getAttack() << " damage!\n";
+                std::cout << "You hit the " << m.getName() << "!\n";
+            }
+            else {
+                std::cout << "You missed the " << m.getName() << '\n';
+            }
+        }
+        
+        else if (choice == 'i') {
+
+            showInventory(p);
+        }
+
+        std::cout << "******\n";
+
+        // Monster's attack
+        if (m.checkAlive()) {
+            if (p.getPotionEffect() == PotionNamespace::Type::invisibility) {
+                std::cout << "Test: matched invisibility\n";
+                p.removePotion();
+                std::cout << "Thanks to the potion of invisibiity you avoided the blows of the " << m.getName() << '\n';
+                continue;
+            }
+            if (fight(m, p)) {
+                std::cout << "The " << m.getName() << " hit you for " << m.getAttack() << " damage!\n";
+            }
+            else {
+                std::cout << "The " << m.getName() << " attacked and missed!\n";
+            }
+        }
+        else {
+            std::cout << "The " << m.getName() << " lies dead.\n";
+            loot(p, m); // randomly acquire items
+            break;
+        }
+
+        if (!p.checkAlive()) {
+            break;
+        }
+    }
+
 }
 
 void specialEvent(Player& p) {
@@ -218,7 +276,23 @@ void specialEvent(Player& p) {
 }
 
 void merchantStage(Player& p) {
-    std::cout << "Special event\n";
+    std::cout << "You come across a merchant selling his wares\n";
+
+    std::cout << "--Options---------------\n";
+    std::cout << "| (b) Browse (l) Leave |\n";
+    std::cout << "------------------------\n";
+    char choice{ makeChoice() };
+
+    if (choice == 'b') {
+        for (int index{ 0 }; index < PotionNamespace::max_potions; ++index) {
+            std::cout << index + 1 << ") " << PotionNamespace::potionName[index] << " cost: " << PotionNamespace::potionCost[index] << '\n';
+        }
+        std::cout << "Make a choice, 0 to cancel: ";
+        int selection{};
+        std::cin >> selection;
+
+    }
+    
 }
 
 void turn(Player& p, int stage) {

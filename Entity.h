@@ -44,5 +44,4 @@ public:
     
     virtual void attack(Entity& enemy) = 0;
     
-    
 };
