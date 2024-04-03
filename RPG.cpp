@@ -25,7 +25,7 @@ int main()
         {
             ++stage;
             turn(player, stage); // Each battle
-            if (stage == 20) {
+            if (player.getLevel() == 10) {
                 std::cout << "*********************\n";
                 std::cout << "Congratulations! you won!\n";
                 std::cout << "*********************\n";

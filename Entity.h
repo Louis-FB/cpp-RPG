@@ -39,6 +39,7 @@ public:
 
     void setCurrentHp(int hp) { m_currentHp -= hp; };
 
+
     //virtual void attack() = 0;
      // Parameter is the attacker (or is target), is pure virtual and assigned by derived?
     

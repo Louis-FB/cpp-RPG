@@ -23,8 +23,6 @@ public:
 		m_gold += gold;
 	}
 
-	
-
 	void addPotion(PotionNamespace::Type potion) {
 		m_inventory.emplace_back(potion);
 	}
@@ -92,10 +90,15 @@ public:
 			for (int index{ 0 }; index < Level::maxLevel; ++index) {
 				if (Level::xpRequirements[index] < m_xp && Level::xpRequirements[index + 1] > m_xp) {
 					if (index == m_level) {
-						std::cout << "Same level\n";
+						std::cout << "Test: Same level\n";
+						std::cout << "Test lvl: " << index << " " << m_level << '\n';
+						std::cout << "Test xp: " << xp << " " << m_xp << '\n';
 						break;
 					}
 					else {
+						std::cout << "Test: Levelling up\n";
+						std::cout << "Test: " << index << " " << m_level << '\n';
+						std::cout << "Test xp: " << xp << " " << m_xp << '\n';
 						this->levelUp(index);
 						break;
 					}
@@ -111,6 +114,8 @@ public:
 		
 		monster.setCurrentHp(this->getAttack());
 	}
+
+	int getLevel() { return m_level; };
 
 	
 };
