@@ -141,6 +141,9 @@ void showInventory(Player& p) {
             }
         }
     }
+    else {
+        std::cout << "Your inventory is empty\n";
+    }
 }
 
 void monsterBattle(Player& p) {
@@ -290,6 +293,11 @@ void merchantStage(Player& p) {
         std::cout << "Make a choice, 0 to cancel: ";
         int selection{};
         std::cin >> selection;
+        
+        if (selection <= PotionNamespace::max_potions && choice > 0) {
+            PotionNamespace::Type purchase{ static_cast<PotionNamespace::Type>(selection - 1) };
+            p.addPotion(purchase);
+        }
 
     }
     
