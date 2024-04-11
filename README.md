@@ -2,4 +2,4 @@
 An RPG made in C++
 Compile and run
 Fight monsters and drink potions.
-If you reach level 20, you win.
+If you reach level 10, you win.
